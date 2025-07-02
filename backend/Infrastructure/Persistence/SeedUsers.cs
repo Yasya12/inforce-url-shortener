@@ -1,5 +1,6 @@
 ﻿using backend.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 namespace backend.Data
 {
     public class SeedUsers

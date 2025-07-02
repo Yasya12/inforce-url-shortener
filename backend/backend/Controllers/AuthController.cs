@@ -1,52 +1,28 @@
-﻿using backend.DTOs;
-using backend.Models;
-using Microsoft.AspNetCore.Identity;
+﻿using Application.Interfaces;
+using backend.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
-namespace backend.Controllers
+namespace backend.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class AuthController(IAuthService authService) : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class AuthController : ControllerBase
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-
-        public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        if (!ModelState.IsValid)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
+            return BadRequest(ModelState);
         }
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
+        var (token, errorMessage) = await authService.LoginAsync(loginDto);
+
+        if (errorMessage is not null)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var user = await _userManager.FindByEmailAsync(loginDto.Email);
-            if (user == null)
-            {
-                return Unauthorized(new { message = "Invalid Credentials" });
-            }
-
-            var result = await _signInManager.PasswordSignInAsync(user, loginDto.Password, isPersistent: false, lockoutOnFailure: false);
-
-            if (result.Succeeded)
-            {
-                return Ok(new { message = "Login successful" });
-            }
-
-            return Unauthorized(new { message = "Invalid Credentials" });
+            return Unauthorized(new { message = errorMessage });
         }
 
-        [HttpPost("logout")]
-        public async Task<IActionResult> Logout()
-        {
-            await _signInManager.SignOutAsync();
-            return Ok(new { message = "Logout successful" });
-        }
+        return Ok(new { token });
     }
 }

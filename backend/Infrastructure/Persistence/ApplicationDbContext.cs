@@ -10,5 +10,7 @@ namespace backend.Data
             : base(options)
         {
         }
+
+        public DbSet<UrlInfo> Urls { get; set; }
     }
 }
