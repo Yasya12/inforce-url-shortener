@@ -1,24 +1,23 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './features/login/login.component';
-import { UrlsTableComponent } from './features/urls-table/urls-table.component';
-import { UrlInfoComponent } from './features/urls-table/url-info/url-info.component';
-import { LogoutComponent } from './features/logout/logout.component';
 import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
-  { path: 'login', component: LoginComponent },
+  {
+    path: 'login',
+    loadComponent: () => import('./features/login/login.component').then(m => m.LoginComponent)
+  },
   {
     path: 'urls',
-    component: UrlsTableComponent
+    loadComponent: () => import('./features/urls-table/urls-table.component').then(m => m.UrlsTableComponent)
   },
   {
     path: 'urls/:id',
-    component: UrlInfoComponent,
-    canActivate: [authGuard] 
+    loadComponent: () => import('./features/urls-table/url-info/url-info.component').then(m => m.UrlInfoComponent),
+    canActivate: [authGuard]
   },
   {
     path: 'logout',
-    component: LogoutComponent,
+    loadComponent: () => import('./features/logout/logout.component').then(m => m.LogoutComponent)
   },
   { path: '', redirectTo: '/urls', pathMatch: 'full' },
   { path: '**', redirectTo: '/urls' }

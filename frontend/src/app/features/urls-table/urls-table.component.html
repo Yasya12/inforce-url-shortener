@@ -16,7 +16,7 @@
       <input
         type="text"
         formControlName="originalUrl"
-        placeholder="https://example.com"
+        placeholder="Enter your URL"
         class="flex-grow w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
       />
 
@@ -82,7 +82,7 @@
           </td>
           <td class="p-4 text-gray-600">{{ url.createdByEmail }}</td>
           <td class="p-4 whitespace-nowrap">
-            @if (authService.isAuthenticated()) {
+            @if (authService.isAuthenticated() && (authService.isAdmin() || url.createdByEmail === authService.user?.email)) {
             <button
               class="bg-red-500 text-white px-3 py-1 rounded text-sm font-medium hover:bg-red-600 transition"
               (click)="onDelete(url.id)"
