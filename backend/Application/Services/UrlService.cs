@@ -13,7 +13,6 @@ public class UrlService(
     public async Task<IEnumerable<UrlInfoDto>> GetAllUrlsAsync(string scheme, string host)
     {
         var urls = await urlRepository.GetAllWithUserAsync();
-        // Логіку мапінгу можна винести в окремий клас-мапер, але для простоти залишимо тут
         return urls.Select(u => MapToDto(u, scheme, host));
     }
 
@@ -70,7 +69,7 @@ public class UrlService(
         return (true, null);
     }
 
-    // Приватний метод для мапінгу, щоб уникнути дублювання коду
+    //mapping
     private UrlInfoDto MapToDto(UrlInfo url, string scheme, string host, string? email = null)
     {
         return new UrlInfoDto

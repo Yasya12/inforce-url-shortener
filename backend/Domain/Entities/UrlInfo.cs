@@ -14,7 +14,6 @@ namespace backend.Models
 
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
-        // Зв'язок з користувачем, який створив посилання
         public  string CreatedById { get; set; }
         public  ApplicationUser CreatedBy { get; set; }
     }
