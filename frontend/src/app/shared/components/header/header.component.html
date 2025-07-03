@@ -1,0 +1,33 @@
+<header class="bg-gray-800 text-white shadow-md">
+  <nav class="container mx-auto px-4 h-16 flex justify-between items-center">
+    
+    <div class="flex items-center gap-6">
+      <a routerLink="/" class="text-xl font-bold hover:text-gray-300">
+        URL Shortener
+      </a>
+      
+      <a routerLink="/urls" 
+         class="text-sm font-semibold text-gray-300 hover:text-white transition-colors">
+        All URLs
+      </a>
+      <a href="/about" class="text-sm font-semibold text-gray-300 hover:text-white">About</a>
+    </div>
+
+    <div>
+      @if (!authService.isAuthenticated()) {
+        <a routerLink="/login" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          Login
+        </a>
+      }
+
+      @if (authService.isAuthenticated()) {
+        <div class="flex items-center gap-4">
+          <span class="text-sm text-gray-300">{{ authService.userEmail() }}</span>
+          <button (click)="logout()" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+            Logout
+          </button>
+        </div>
+      }
+    </div>
+  </nav>
+</header>

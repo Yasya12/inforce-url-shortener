@@ -1,0 +1,104 @@
+<div
+  class="container mx-auto max-w-5xl p-4 sm:p-6 lg:p-8 font-sans text-gray-800"
+>
+  <h1 class="text-4xl font-bold text-center mb-8 text-slate-700">
+    URL Shortener
+  </h1>
+
+  @if (authService.isAuthenticated()) {
+  <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+    <h3 class="text-2xl font-semibold mb-4 text-slate-600">Add new URL</h3>
+    <form
+      [formGroup]="addUrlForm"
+      (ngSubmit)="onAddUrl()"
+      class="flex flex-col sm:flex-row items-center gap-4"
+    >
+      <input
+        type="text"
+        formControlName="originalUrl"
+        placeholder="https://example.com"
+        class="flex-grow w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+      />
+
+      <button
+        type="submit"
+        [disabled]="addUrlForm.invalid"
+        class="w-full sm:w-auto bg-indigo-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-400 disabled:cursor-not-allowed transition"
+      >
+        Shorten
+      </button>
+    </form>
+  </div>
+  }
+
+  <hr class="my-8 border-gray-200" />
+
+  @if (isLoading()) {
+  <p class="text-center text-gray-500 py-12">Loading URLs...</p>
+  } @if (error()) {
+  <p
+    class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-center"
+  >
+    {{ error() }}
+  </p>
+  } @if (!isLoading() && urls().length > 0) {
+  <div class="bg-white shadow-md rounded-lg overflow-hidden">
+    <table class="w-full text-left border-collapse">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="p-4 font-semibold text-sm uppercase text-gray-600">
+            Original URL
+          </th>
+          <th class="p-4 font-semibold text-sm uppercase text-gray-600">
+            Short URL
+          </th>
+          <th class="p-4 font-semibold text-sm uppercase text-gray-600">
+            Created By
+          </th>
+          <th class="p-4 font-semibold text-sm uppercase text-gray-600">
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        @for (url of urls(); track url.id) {
+        <tr class="hover:bg-gray-50 transition">
+          <td class="p-4 max-w-xs truncate">
+            <a
+              [routerLink]="['/urls', url.id]"
+              class="text-indigo-600 hover:text-indigo-800 hover:underline"
+              [title]="url.originalUrl"
+            >
+              {{ url.originalUrl }}
+            </a>
+          </td>
+          <td class="p-4 whitespace-nowrap">
+            <a
+              [href]="url.shortUrl"
+              target="_blank"
+              class="text-indigo-600 hover:text-indigo-800 hover:underline"
+              >{{ url.shortUrl }}</a
+            >
+          </td>
+          <td class="p-4 text-gray-600">{{ url.createdByEmail }}</td>
+          <td class="p-4 whitespace-nowrap">
+            @if (authService.isAuthenticated()) {
+            <button
+              class="bg-red-500 text-white px-3 py-1 rounded text-sm font-medium hover:bg-red-600 transition"
+              (click)="onDelete(url.id)"
+            >
+              Delete
+            </button>
+            }
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  } @if (!isLoading() && urls().length === 0) {
+  <p class="text-center text-gray-500 py-12">
+    No URLs found. Add one to get started!
+  </p>
+  }
+</div>
